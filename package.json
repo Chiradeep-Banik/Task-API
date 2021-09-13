@@ -1,0 +1,19 @@
+{
+  "name": "task-app",
+  "version": "1.0.0",
+  "description": "A task App",
+  "main": "app.js",
+  "scripts": {
+    "start": "node routes/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chiradeep-Banik/Task-App.git"
+  },
+  "author": "banik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chiradeep-Banik/Task-App/issues"
+  },
+  "homepage": "https://github.com/Chiradeep-Banik/Task-App#readme"
+}
