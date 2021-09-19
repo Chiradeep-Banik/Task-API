@@ -1,12 +1,11 @@
 {
   "name": "task-app",
   "version": "1.0.0",
-  "description": "A task App",
-  "main": "app.js",
+  "description": "A simple task app",
+  "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js"
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Chiradeep-Banik/Task-App.git"
