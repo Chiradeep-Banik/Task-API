@@ -4,8 +4,9 @@
   "description": "A task App",
   "main": "app.js",
   "scripts": {
-    "start": "node routes/app.js"
+    "start": "node src/app.js"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Chiradeep-Banik/Task-App.git"
@@ -17,7 +18,6 @@
   },
   "homepage": "https://github.com/Chiradeep-Banik/Task-App#readme",
   "dependencies": {
-    "express": "^4.17.1",
     "mongoose": "^6.0.6",
     "validator": "^13.6.0"
   }
