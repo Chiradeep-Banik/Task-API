@@ -4,12 +4,12 @@ const app = express();
 require("./db/mongoose");
 const { user } = require("./models/user");
 const { task } = require("./models/task");
-const { ObjectId } = require('mongoose');
 
 const PORT = process.env.PORT || 1313;
 
 app.use(express.json());
 
+//Task POST ----------------------------------------------------------------------------------------------
 app.post('/tasks', (req, res) => {
     console.log(req.body);
     task.create(req.body,).then(() => {
@@ -19,6 +19,8 @@ app.post('/tasks', (req, res) => {
         res.status(400).send(err);
     });
 });
+//Task POST ----------------------------------------------------------------------------------------------
+//User POST ----------------------------------------------------------------------------------------------
 app.post('/users', (req, res) => {
     console.log(req.body);
     user.create(req.body).then(() =>{
@@ -28,6 +30,8 @@ app.post('/users', (req, res) => {
         res.status(400).send(err);
     });
 });
+//User POST ----------------------------------------------------------------------------------------------
+//Task GET -----------------------------------------------------------------------------------------------
 app.get('/tasks', (req, res) => {
     task.find({}).then(tasks => {
         res.status(200).send(tasks);
@@ -43,6 +47,8 @@ app.get('/tasks/:id',(req,res)=>{
         res.status(400).send(err);
     });
 });
+//Task GET ------------------------------------------------------------------------------------------------
+////User GET-----------------------------------------------------------------------------------------------
 app.get('/users', (req, res) => {
     user.find({}).then(tasks => {
         res.status(200).send(tasks);
@@ -58,7 +64,8 @@ app.get('/users/:id',(req,res)=>{
         res.status(400).send(err);
     });
 });
-
+////User GET-----------------------------------------------------------------------------------------------
+//Task DELETE----------------------------------------------------------------------------------------------
 app.delete('/tasks',(req,res)=>{    
     task.deleteMany({}).then(()=>{
         res.status(200).send("Deleted all tasks");
@@ -75,6 +82,8 @@ app.delete('/tasks/:id',(req,res)=>{
         res.status(400).send(err);
     });
 });
+//Task DELETE-----------------------------------------------------------------------------------------------
+//User DELETE-----------------------------------------------------------------------------------------------
 app.delete('/users',(req,res)=>{    
     user.deleteMany({}).then(()=>{
         res.status(200).send("Deleted all tasks");
@@ -91,6 +100,6 @@ app.delete('/users/:id',(req,res)=>{
         res.status(400).send(err);
     });
 });
-
+//User DELETE-------------------------------------------------------------------------------------------------
 
 app.listen(PORT,()=>console.log(`Listening on port ${PORT}`));
