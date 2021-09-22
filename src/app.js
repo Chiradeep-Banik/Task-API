@@ -1,3 +1,4 @@
+
 const express= require('express');
 const app = express();
 
@@ -9,8 +10,10 @@ const task_routes = require('./routes/task_routes');
 const PORT = process.env.PORT || 1313;
 
 app.use(express.json());
+
 app.use(user_routes);
 app.use(task_routes);
+
 
 app.get("*",(req,res)=>{
     res.send("404 NOT FOUND");
