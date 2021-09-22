@@ -10,13 +10,14 @@ HTTP request --> is generally STATELESS -> meaning after sending a
 - REQUEST and recieving a 
 - RESPONSE it is done.
 - REST API -- Representational State Transfer
-	- REST API Verbs --
-		- GET
-		- POST
-		- PUT
-		- PATCH
-		- DELETE
 	- All the REST api verbs are CRUD(Create,Read,Update,Delete)
+- HTTP Verbs --
+	- GET -- Only reading data from the server
+	- POST -- Only sending data to the server
+	- PUT -- Updating and Creating data on the server
+	- PATCH -- Only updating data on the server
+	- DELETE -- Deletin data from the server
+	- HEAD -- Only reading the headers from a server
 
 ## MongoDB
 * NoSQL -- Not Only Structured Query Language -- like MongoDB
