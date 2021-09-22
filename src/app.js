@@ -10,96 +10,173 @@ const PORT = process.env.PORT || 1313;
 app.use(express.json());
 
 //Task POST ----------------------------------------------------------------------------------------------
-app.post('/tasks', (req, res) => {
-    console.log(req.body);
-    task.create(req.body,).then(() => {
-        console.log(task);
-        res.sendStatus(201);
-    }).catch(err =>{
+app.post('/tasks', async (req, res) => {
+    try{
+        var create_promise = await task.create(req.body);
+        res.status(201).send(create_promise);
+    } catch(err){
         res.status(400).send(err);
-    });
+    };
 });
 //Task POST ----------------------------------------------------------------------------------------------
 //User POST ----------------------------------------------------------------------------------------------
-app.post('/users', (req, res) => {
-    console.log(req.body);
-    user.create(req.body).then(() =>{
-        console.log(user);
-        res.sendStatus(201);
-    }).catch(err =>{
+app.post('/users', async (req, res) => {
+    try{
+        var create_promise = await user.create(req.body);
+        res.status(201).send(create_promise);
+    } catch(err){
         res.status(400).send(err);
-    });
+    };
 });
 //User POST ----------------------------------------------------------------------------------------------
 //Task GET -----------------------------------------------------------------------------------------------
-app.get('/tasks', (req, res) => {
-    task.find({}).then(tasks => {
-        res.status(200).send(tasks);
-    }).catch(err =>{
+app.get('/tasks', async (req, res) => {
+    try{
+        var find_promise = await task.find({});
+        if(find_promise.length != 0)
+            res.status(200).send(find_promise);
+        else
+            res.status(404).send("Not found");
+    } catch(err) {
         res.status(400).send(err);
-    });
+    };
 });
-app.get('/tasks/:id',(req,res)=>{
-    var id = req.params.id;
-    task.find({_id: id}).then(tasks => {
-        res.status(200).send(tasks);
-    }).catch(err =>{
+app.get('/tasks/:id', async (req,res)=>{
+    try{
+        var id = req.params.id;
+        var find_promise = await task.find({_id: id});
+        if(find_promise.length != 0)
+            res.status(200).send(find_promise);
+        else
+            res.status(404).send("Not found");
+    } catch(err){
         res.status(400).send(err);
-    });
+    }
 });
 //Task GET ------------------------------------------------------------------------------------------------
 ////User GET-----------------------------------------------------------------------------------------------
-app.get('/users', (req, res) => {
-    user.find({}).then(tasks => {
-        res.status(200).send(tasks);
-    }).catch(err =>{
+app.get('/users', async (req, res) => {
+    try{
+        var find_promise = await user.find({});
+        if(find_promise.length != 0)
+            res.status(200).send(find_promise);
+        else
+            res.status(404).send("Not found");
+    } catch(err) {
         res.status(400).send(err);
-    });
+    };
 });
-app.get('/users/:id',(req,res)=>{
-    var id = req.params.id;
-    user.find({_id: id}).then(tasks => {
-        res.status(200).send(tasks);
-    }).catch(err =>{
+app.get('/users/:id', async (req,res)=>{
+    try{
+        var id = req.params.id;
+        var find_promise = await user.find({_id: id});
+        if(find_promise.length != 0)
+            res.status(200).send(find_promise);
+        else
+            res.status(404).send("Not found");
+    } catch(err){
         res.status(400).send(err);
-    });
+    }
 });
 ////User GET-----------------------------------------------------------------------------------------------
 //Task DELETE----------------------------------------------------------------------------------------------
-app.delete('/tasks',(req,res)=>{    
-    task.deleteMany({}).then(()=>{
-        res.status(200).send("Deleted all tasks");
-    }).catch(err=>{
+app.delete('/tasks', async (req,res)=>{    
+    try{
+        var delete_promise = await task.deleteMany({});
+        if(delete_promise.deletedCount != 0)
+            res.status(204).send(delete_promise);
+        else
+            res.status(404).send("No task found");
+    } catch(err){
         res.status(400).send(err);
-    }); 
+    }
 });
-app.delete('/tasks/:id',(req,res)=>{
-    var id = req.params.id;
-    task.deleteOne({_id: id}).then((re)=>{
-        console.log(task);
-        res.status(204).send(re);
-    }).catch(err=>{
+app.delete('/tasks/:id', async (req,res)=>{
+    try{
+        var id = req.params.id;
+        var delete_promise = await task.deleteOne({_id: id});
+        if(delete_promise.deletedCount != 0)
+            res.status(204).send(delete_promise);
+        else
+            res.status(404).send("No task found");
+    }catch(err){
         res.status(400).send(err);
-    });
+    }
 });
 //Task DELETE-----------------------------------------------------------------------------------------------
 //User DELETE-----------------------------------------------------------------------------------------------
-app.delete('/users',(req,res)=>{    
-    user.deleteMany({}).then(()=>{
-        res.status(200).send("Deleted all tasks");
-    }).catch(err=>{
+app.delete('/users', async (req,res)=>{    
+    try{
+        var delete_promise = await user.deleteMany({});
+        if(delete_promise.deletedCount != 0)
+            res.status(200).send("Deleted all users",delete_promise);
+        else
+            res.status(404).send("No users found");
+    } catch(err){
         res.status(400).send(err);
-    }); 
+    }
 });
-app.delete('/users/:id',(req,res)=>{
-    var id = req.params.id;
-    user.deleteOne({_id: id}).then((re)=>{
-        console.log(task);
-        res.status(204).send(re);
-    }).catch(err=>{
+app.delete('/users/:id', async (req,res)=>{
+    try{
+        var id = req.params.id;
+        var delete_promise = await user.deleteOne({_id: id});
+        if(delete_promise.deletedCount != 0)
+            res.status(200).send("Deleted all users",delete_promise);
+        else
+            res.status(404).send("No users found");
+    }catch(err){
         res.status(400).send(err);
-    });
+    }
 });
 //User DELETE-------------------------------------------------------------------------------------------------
+
+//Task UPDATE-------------------------------------------------------------------------------------------------
+app.put("/tasks/:id", async (req,res)=>{
+    var data = Object.keys(req.body);
+    console.log(data);
+    const can_update = new Set(["description", "isCompleted","name"]);
+    var to_update = true;
+    for(var i = 0; i < data.length; i++){
+        if(!can_update.has(data[i])){
+            to_update = false;
+            break;
+        }
+    }
+    if(!to_update){
+        res.status(400).send("Invalid update");
+    }else try {
+        var id = req.params.id;
+        var update_promise = await task.findOneAndUpdate({_id : id },req.body , {runValidators:true});
+        res.status(204).send(update_promise);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+//User UPDATE-------------------------------------------------------------------------------------------------
+app.put("/users/:id", async (req,res)=>{
+    var data = Object.keys(req.body);
+    console.log(data);
+    const can_update = new Set(["email","name","password"]);
+    var to_update = true;
+    for(var i = 0; i < data.length; i++){
+        if(!can_update.has(data[i])){
+            to_update = false;
+            break;
+        }
+    }
+    if(!to_update){
+        res.status(400).send("Invalid update");
+    }else try {
+        var id = req.params.id;
+        var update_promise = await user.findOneAndUpdate({_id : id },req.body,{runValidators:true});
+        res.status(204).send(update_promise);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
+app.get("*",(req,res)=>{
+    res.send("404 NOT FOUND");
+});
 
 app.listen(PORT,()=>console.log(`Listening on port ${PORT}`));
