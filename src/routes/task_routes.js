@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { task } = require('./../models/task');
-
+const { task_update_validator } = require('../helpers/task_helper');
 const router = new Router();
 
 //POST ----------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ router.delete('/tasks', async (req,res)=>{
     try{
         var delete_promise = await task.deleteMany({});
         if(delete_promise.deletedCount != 0)
-            res.status(204).send(delete_promise);
+            res.status(204).send(`Deleted all ${delete_promise}`);
         else
             res.status(404).send("No task found");
     } catch(err){
@@ -57,7 +57,7 @@ router.delete('/tasks/:id', async (req,res)=>{
         var id = req.params.id;
         var delete_promise = await task.deleteOne({_id: id});
         if(delete_promise.deletedCount != 0)
-            res.status(204).send(delete_promise);
+            res.status(204).send(`Deleted ${delete_promise}`);
         else
             res.status(404).send("No task found");
     }catch(err){
@@ -68,17 +68,8 @@ router.delete('/tasks/:id', async (req,res)=>{
 
 //UPDATE------------------------------------------------------------------------------------------------
 router.put("/tasks/:id", async (req,res)=>{
-    var data = Object.keys(req.body);
-    console.log(data);
     const can_update = new Set(["description", "isCompleted","name"]);
-    var to_update = true;
-    for(var i = 0; i < data.length; i++){
-        if(!can_update.has(data[i])){
-            to_update = false;
-            break;
-        }
-    }
-    if(!to_update){
+    if(!task_update_validator(req.body, can_update)){
         res.status(400).send("Invalid update");
     }else try {
         var id = req.params.id;
