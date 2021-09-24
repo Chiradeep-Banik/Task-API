@@ -1,5 +1,5 @@
 const { Schema,model } = require('mongoose');
-const { isEmail, isStrongPassword } = require('validator');
+const { isEmail } = require('validator');
 
 const user_schema = new Schema({
     name:{
@@ -12,6 +12,7 @@ const user_schema = new Schema({
         required: true,
         trim: true,
         toLowerCase: true,
+        unique: true,
         validate: {
             validator(value){
                 if(!isEmail(value))
@@ -22,17 +23,16 @@ const user_schema = new Schema({
     password:{
         type: String,
         required: true,
-        trim: true,
-        validate:{
-            validator(value){
-                if(!isStrongPassword(value)){
-                    throw new Error("Not a strong password");
-                }
-            }
+        trim: true
+    },
+    tokens: [{
+        token:{
+            type: String,
+            required: true
         }
-    }
+    }]
 });
 const user = model('user', user_schema,'Users');
-module.exports ={
-    user
-}
+module.exports = {
+    user : user
+};

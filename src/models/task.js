@@ -20,6 +20,6 @@ const task_schema = new Schema({
 
 const task = model('task', task_schema,'Tasks');
 
-module.exports ={
-    task
-}
+module.exports = {
+    task : task
+};
