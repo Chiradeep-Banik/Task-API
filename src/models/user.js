@@ -33,6 +33,6 @@ const user_schema = new Schema({
     }]
 });
 const user = model('user', user_schema,'Users');
-module.exports ={
-    user
-}
+module.exports = {
+    user : user
+};
