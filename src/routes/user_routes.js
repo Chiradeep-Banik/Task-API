@@ -1,9 +1,12 @@
 const { Router } = require('express');
+const mongoose = require('mongoose');
 const { user } = require('./../models/user');
 
-const { pass_to_hash, check_user, user_update_validator } = require('../helpers/user_helper');
+const { pass_to_hash, check_user, user_update_validator, generate_token, verify_token } = require('../helpers/user_helper');
  
 const router = new Router();
+const ObjectId = mongoose.Types.ObjectId;
+
 
 //GET-----------------------------------------------------------------------------------------------------
 router.get('/users', async (req, res) => {
@@ -35,6 +38,8 @@ router.get('/users/:id', async (req,res)=>{
 router.post('/users', async (req, res) => {
     try{
         req.body.password = pass_to_hash(req.body.password);
+        req.body._id = new ObjectId();
+        req.body.tokens = [{ token: await generate_token(req.body._id) }];
         var create_promise = await user.create(req.body);
         res.status(201).send(create_promise);
     } catch(err){
@@ -44,9 +49,14 @@ router.post('/users', async (req, res) => {
 //LOGIN
 router.post('/users/login', async (req, res) => {
     try{
-        var my_user = await check_user(req.body.email,req.body.password);
-        res.status(200).send(my_user);
+        var my_user = await check_user( req.body.email , req.body.password );
+        var token = await generate_token(my_user._id);
+        my_user.tokens.push({token : token});
+        console.log(my_user);
+        await my_user.save();
+        res.status(200).send({my_user});
     } catch(err){
+        console.log(err);
         res.status(400).send(err);
     }
 });
@@ -90,7 +100,8 @@ router.put("/users/:id", async (req,res)=>{
         var id = req.params.id;
         if(has_pass == true)
             req.body.password = pass_to_hash(req.body.password);
-        var update_promise = await user.findOneAndUpdate({_id : id },req.body,{runValidators:true});
+        var update_promise = await user.findOneAndUpdate({ _id : id },req.body,{ runValidators:true,new:true });
+        console.log(update_promise);
         res.status(204).send(update_promise);
     } catch (e) {
         res.status(400).send(e);

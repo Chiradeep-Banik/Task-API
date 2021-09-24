@@ -1,6 +1,8 @@
 const { user } = require('../models/user');
 const { createHash } = require('crypto');
 const { isStrongPassword } = require('validator');
+const { sign,verify } = require('jsonwebtoken');
+require('dotenv').config();
 
 //Hashing the password with sha256
 var pass_to_hash = (pass)=>{
@@ -35,9 +37,25 @@ var user_update_validator = (value, value_set)=>{
     }
     return { to_update, has_pass };
 }
+//User token creater 
+var generate_token = async (id)=>{
+    var token = sign({ _id: id.toString(),date: Date.now() }, process.env.SECRET_KEY);
+    return token;
+};
+//verify token
+var verify_token = async (token)=>{
+    try{
+        var res = verify(token, process.env.SECRET_KEY);
+        if(res) return true;
+    } catch (err){
+        return false;
+    }
+};
 
 module.exports= {
     pass_to_hash,
     check_user,
-    user_update_validator
+    user_update_validator,
+    generate_token,
+    verify_token
 }

@@ -24,7 +24,13 @@ const user_schema = new Schema({
         type: String,
         required: true,
         trim: true
-    }
+    },
+    tokens: [{
+        token:{
+            type: String,
+            required: true
+        }
+    }]
 });
 const user = model('user', user_schema,'Users');
 module.exports ={
