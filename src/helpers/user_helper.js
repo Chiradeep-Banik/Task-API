@@ -42,13 +42,27 @@ var generate_token = async (id)=>{
     var token = sign({ _id: id.toString(),date: Date.now() }, process.env.SECRET_KEY);
     return token;
 };
-//verify token
-var verify_token = async (token)=>{
-    try{
-        var res = verify(token, process.env.SECRET_KEY);
-        if(res) return true;
-    } catch (err){
-        return false;
+
+//Authentication middleware
+
+var auth = async (req, res, next)=>{
+    var token = req.body.token;
+    var id = req.params.id;
+    if(token){
+        try{
+            var m_user = await user.findById(id);
+            for(var i = 0; i < m_user.tokens.length; i++){
+                if(m_user.tokens[i].token === token){
+                    next();
+                    return;
+                }
+            }
+            throw ("Invalid token");
+        } catch (err){
+            res.status(401).send(err);
+        }
+    }else{
+        res.send("No token provided");
     }
 };
 
@@ -57,5 +71,5 @@ module.exports= {
     check_user,
     user_update_validator,
     generate_token,
-    verify_token
+    auth
 }

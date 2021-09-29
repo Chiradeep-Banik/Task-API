@@ -1,14 +1,14 @@
 const { Router } = require('express');
 const mongoose = require('mongoose');
-const { user } = require('./../models/user');
+const { user } = require('../models/user');
 
-const { pass_to_hash, check_user, user_update_validator, generate_token, verify_token } = require('../helpers/user_helper');
+const { pass_to_hash, check_user, user_update_validator, generate_token, auth } = require('../helpers/user_helper');
 
 const router = new Router();
 const ObjectId = mongoose.Types.ObjectId;
 
 
-//GET-----------------------------------------------------------------------------------------------------
+// GET-----------------------------------------------------------------------------------------------------
 router.get('/users', async (req, res) => {
     try {
         var find_promise = await user.find({});
@@ -76,7 +76,7 @@ router.delete('/users', async (req, res) => {
         res.status(400).send(err);
     }
 });
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id',auth, async (req, res) => {
     try {
         var id = req.params.id;
         var delete_promise = await user.deleteOne({ _id: id });
