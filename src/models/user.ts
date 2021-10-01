@@ -1,5 +1,5 @@
 import { Schema,model,Document} from 'mongoose';
-// import isEmail from 'validator/es/lib/isEmail';
+import isEmail from 'validator/es/lib/isEmail';
 
 interface IToken {
     token: string;
@@ -24,12 +24,12 @@ const user_schema = new Schema<IUser>({
         trim: true,
         toLowerCase: true,
         unique: true,
-        // validate: {
-        //     validator(value:string){
-        //         if(!isEmail(value))
-        //             throw new Error("Invalid email");
-        //     }
-        // }
+        validate: {
+            validator(value:string){
+                if(!isEmail(value))
+                    throw new Error("Invalid email");
+            }
+        }
     },
     password:{
         type: String,

@@ -1,4 +1,3 @@
-// require('dotenv').config();
 import * as dotenv from "dotenv";
 import express, { Application,Response,Request } from 'express';
 import "./db/mongoose"; 
