@@ -27,19 +27,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = exports.generate_token = exports.user_update_validator = exports.check_user = exports.pass_to_hash = void 0;
 const user_1 = require("../models/user");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = require("crypto");
-// import isStrongPassword from 'validator';
+const isStrongPassword_1 = __importDefault(require("validator/es/lib/isStrongPassword"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 dotenv.config();
 const node_process_1 = require("node:process");
 //Hashing the password with sha256
 var pass_to_hash = (pass) => {
-    // if(!isStrongPassword(pass)) 
-    //     throw ("Password is not strong enough");
+    if (!(0, isStrongPassword_1.default)(pass))
+        throw ("Password is not strong enough");
     var hash_password = (0, crypto_1.createHash)('sha256').update(pass).digest('hex');
     return hash_password;
 };
