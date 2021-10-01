@@ -1,6 +1,12 @@
-const { Schema,model } = require('mongoose');
+import { Schema,model } from "mongoose";
 
-const task_schema = new Schema({
+export interface ITask {
+    name:string;
+    description:string;
+    isCompleted:boolean;
+}
+
+const task_schema = new Schema<ITask>({
     name:{
         type: String,
         trim: true,
@@ -18,8 +24,4 @@ const task_schema = new Schema({
     }
 });
 
-const task = model('task', task_schema,'Tasks');
-
-module.exports = {
-    task : task
-};
+export const task = model<ITask>('task', task_schema,'Tasks');

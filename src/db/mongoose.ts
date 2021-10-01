@@ -8,7 +8,7 @@ connect(uri).then(():void => {
 
     console.log(" Connected to MongoDB !! ");
 
-}).catch((err:Error):void => console.log(err));
+}).catch((err:unknown):void => console.log(err));
 
 
 
