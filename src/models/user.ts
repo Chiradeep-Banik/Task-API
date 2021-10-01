@@ -1,7 +1,18 @@
-const { Schema,model } = require('mongoose');
-const { isEmail } = require('validator');
+import { Schema,model,Document} from 'mongoose';
+import isEmail from 'validator/es/lib/isEmail';
 
-const user_schema = new Schema({
+interface IToken {
+    token: string;
+};
+export interface IUser extends Document {
+    name: string;
+    email: string;
+    password: string;
+    tokens: Array<IToken>;
+    _id: string;
+};
+
+const user_schema = new Schema<IUser>({
     name:{
         type: String,
         trim: true,
@@ -14,7 +25,7 @@ const user_schema = new Schema({
         toLowerCase: true,
         unique: true,
         validate: {
-            validator(value){
+            validator(value:string){
                 if(!isEmail(value))
                     throw new Error("Invalid email");
             }
@@ -32,7 +43,4 @@ const user_schema = new Schema({
         }
     }]
 });
-const user = model('user', user_schema,'Users');
-module.exports = {
-    user : user
-};
+export const user = model<IUser>('user', user_schema,'Users');
