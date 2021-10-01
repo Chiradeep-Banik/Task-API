@@ -1,7 +1,7 @@
 import { user,IUser } from "../models/user";
 import * as dotenv from 'dotenv';
 import { createHash } from "crypto";
-import isStrongPassword from 'validator/es/lib/isStrongPassword';
+// import isStrongPassword from 'validator';
 import { sign } from 'jsonwebtoken';
 import {  Request, Response, NextFunction } from "express";
 dotenv.config();
@@ -9,8 +9,8 @@ import { env } from 'node:process'
 
 //Hashing the password with sha256
 export var pass_to_hash = (pass:string):string=>{
-    if(!isStrongPassword(pass)) 
-        throw ("Password is not strong enough");
+    // if(!isStrongPassword(pass)) 
+    //     throw ("Password is not strong enough");
     var hash_password = createHash('sha256').update(pass).digest('hex');
     return hash_password;
 };
