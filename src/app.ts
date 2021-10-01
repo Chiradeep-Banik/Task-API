@@ -7,7 +7,6 @@ import { router as task_routes } from './routes/task_routes';
 import { router as user_routes } from './routes/user_routes';
 
 const PORT = process.env.PORT;
-
 app.use(express.json());
 app.use(user_routes);
 app.use(task_routes);
