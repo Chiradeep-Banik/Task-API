@@ -1,14 +1,14 @@
-require('dotenv').config();
-
-const { connect } = require('mongoose');
+import * as dotenv from 'dotenv';
+import { connect,Error } from 'mongoose';
+dotenv.config();
 const pw = process.env.DB_PASSWORD;
 const uri = `mongodb+srv://banik_1313:${pw}@cluster0.gdrur.mongodb.net/Task-Manager?retryWrites=true&w=majority`;
 
-connect(uri).then((client) => {
+connect(uri).then(():void => {
 
     console.log(" Connected to MongoDB !! ");
 
-}).catch(err => console.log(err));
+}).catch((err:Error):void => console.log(err));
 
 
 
