@@ -1,6 +1,5 @@
 import { Schema,model,Document} from 'mongoose';
 import * as emailValidator from 'email-validator';
-
 interface IToken {
     token: string;
 };

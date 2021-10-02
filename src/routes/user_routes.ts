@@ -7,13 +7,9 @@ export const router = Router();
 const ObjectId = mongoose.Types.ObjectId;
 
 // GET-----------------------------------------------------------------------------------------------------
-router.get('/users', async (req:Request, res:Response):Promise<void> => {
+router.get('/users/me', auth ,async (req:Request, res:Response):Promise<void> => {
     try {
-        var find_promise = await user.find({});
-        if (find_promise.length != 0)
-            res.status(200).send(find_promise);
-        else
-            res.status(404).send("Not found");
+        res.status(200).send(req.user);
     } catch (err:unknown) {
         res.status(400).send(err);
     };
@@ -74,7 +70,7 @@ router.delete('/users', async (req:Request, res:Response):Promise<void> => {
         res.status(400).send(err);
     }
 });
-router.delete('/users/:id',auth, async (req:Request, res:Response):Promise<void> => {
+router.delete('/users/:id', async (req:Request, res:Response):Promise<void> => {
     try {
         var id = req.params.id;
         var delete_promise = await user.deleteOne({ _id: id });
