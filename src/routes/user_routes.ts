@@ -1,8 +1,8 @@
 import { Router,Request,Response } from 'express';
 import mongoose from 'mongoose';
-import { user } from '../models/user';
-import { pass_to_hash, check_user, user_update_validator, generate_token, auth } from '../helpers/user_helper';
-
+import { user } from '../models/user_model';
+import { pass_to_hash, check_user, user_update_validator, generate_token } from '../helpers/user_helper';
+import { auth } from '../middlewares/auth';
 export const router = Router();
 const ObjectId = mongoose.Types.ObjectId;
 

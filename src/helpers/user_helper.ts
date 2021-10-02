@@ -1,16 +1,18 @@
-import { user,IUser } from "../models/user";
+import { user,IUser } from "../models/user_model";
 import * as dotenv from 'dotenv';
 import { createHash } from "crypto";
-// import isStrongPassword from 'validator';
+import PasswordValidator from "password-validator";
 import { sign } from 'jsonwebtoken';
 import {  Request, Response, NextFunction } from "express";
 dotenv.config();
 import { env } from 'node:process'
 
 //Hashing the password with sha256
+var isStrongPassword = new PasswordValidator();
+isStrongPassword.is().min(8).is().max(100).has().uppercase().has().lowercase().has().digits().has().not().spaces().has().symbols();
 export var pass_to_hash = (pass:string):string=>{
-    // if(!isStrongPassword(pass)) 
-    //     throw ("Password is not strong enough");
+    if(!isStrongPassword.validate(pass)) 
+        throw ("Password is not strong enough");
     var hash_password = createHash('sha256').update(pass).digest('hex');
     return hash_password;
 };
@@ -51,27 +53,3 @@ export var generate_token = async (id:string):Promise<string>=>{
     return token;
 };
 
-//Authentication middleware
-
-export var auth = async (req:Request, res:Response, next:NextFunction):Promise<void>=>{
-    var token = req.body.token;
-    var id = req.params.id;
-    if(token){
-        try{
-            var m_user = await user.findById(id);
-            if(m_user !== null){
-                for(var i = 0; i < m_user.tokens.length; i++){
-                    if(m_user.tokens[i].token === token){
-                        next();
-                        return;
-                    }
-                }
-            }
-            throw ("Invalid token");
-        } catch (err){
-            res.status(401).send(err);
-        }
-    }else{
-        res.send("No token provided");
-    }
-};

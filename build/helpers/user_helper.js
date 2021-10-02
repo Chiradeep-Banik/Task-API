@@ -27,26 +27,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.auth = exports.generate_token = exports.user_update_validator = exports.check_user = exports.pass_to_hash = void 0;
-const user_1 = require("../models/user");
+exports.generate_token = exports.user_update_validator = exports.check_user = exports.pass_to_hash = void 0;
+const user_model_1 = require("../models/user_model");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = require("crypto");
-// import isStrongPassword from 'validator';
+const password_validator_1 = __importDefault(require("password-validator"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 dotenv.config();
 const node_process_1 = require("node:process");
 //Hashing the password with sha256
+var isStrongPassword = new password_validator_1.default();
+isStrongPassword.is().min(8).is().max(100).has().uppercase().has().lowercase().has().digits().has().not().spaces().has().symbols();
 var pass_to_hash = (pass) => {
-    // if(!isStrongPassword(pass)) 
-    //     throw ("Password is not strong enough");
+    if (!isStrongPassword.validate(pass))
+        throw ("Password is not strong enough");
     var hash_password = (0, crypto_1.createHash)('sha256').update(pass).digest('hex');
     return hash_password;
 };
 exports.pass_to_hash = pass_to_hash;
 //Checking the user during login
 var check_user = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    var my_user = yield user_1.user.findOne({ email: email });
+    var my_user = yield user_model_1.user.findOne({ email: email });
     var hash_password = (0, crypto_1.createHash)('sha256').update(password).digest('hex');
     if (my_user == null) {
         throw ("User not found");
@@ -81,29 +86,3 @@ var generate_token = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return token;
 });
 exports.generate_token = generate_token;
-//Authentication middleware
-var auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var token = req.body.token;
-    var id = req.params.id;
-    if (token) {
-        try {
-            var m_user = yield user_1.user.findById(id);
-            if (m_user !== null) {
-                for (var i = 0; i < m_user.tokens.length; i++) {
-                    if (m_user.tokens[i].token === token) {
-                        next();
-                        return;
-                    }
-                }
-            }
-            throw ("Invalid token");
-        }
-        catch (err) {
-            res.status(401).send(err);
-        }
-    }
-    else {
-        res.send("No token provided");
-    }
-});
-exports.auth = auth;

@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 const express_1 = require("express");
 const task_helper_1 = require("../helpers/task_helper");
-const task_1 = require("../models/task");
+const task_model_1 = require("../models/task_model");
 exports.router = (0, express_1.Router)();
 //POST ----------------------------------------------------------------------------------------------
 exports.router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var create_promise = yield task_1.task.create(req.body);
+        var create_promise = yield task_model_1.task.create(req.body);
         res.status(201).send(create_promise);
     }
     catch (err) {
@@ -29,7 +29,7 @@ exports.router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, fu
 //GET -----------------------------------------------------------------------------------------------
 exports.router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var find_promise = yield task_1.task.find({});
+        var find_promise = yield task_model_1.task.find({});
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -43,7 +43,7 @@ exports.router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
-        var find_promise = yield task_1.task.find({ _id: id });
+        var find_promise = yield task_model_1.task.find({ _id: id });
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -57,7 +57,7 @@ exports.router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0,
 //DELETE----------------------------------------------------------------------------------------------
 exports.router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var delete_promise = yield task_1.task.deleteMany({});
+        var delete_promise = yield task_model_1.task.deleteMany({});
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted all ${delete_promise}`);
         else
@@ -70,7 +70,7 @@ exports.router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
-        var delete_promise = yield task_1.task.deleteOne({ _id: id });
+        var delete_promise = yield task_model_1.task.deleteOne({ _id: id });
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted ${delete_promise}`);
         else
@@ -90,7 +90,7 @@ exports.router.put("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0,
     else
         try {
             var id = req.params.id;
-            var update_promise = yield task_1.task.findOneAndUpdate({ _id: id }, req.body, { runValidators: true });
+            var update_promise = yield task_model_1.task.findOneAndUpdate({ _id: id }, req.body, { runValidators: true });
             res.status(204).send(update_promise);
         }
         catch (e) {

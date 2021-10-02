@@ -1,6 +1,6 @@
 import { Router,Request,Response } from 'express';
 import { task_update_validator } from "../helpers/task_helper";
-import { task } from '../models/task';
+import { task } from '../models/task_model';
 
 export const router = Router();
 
