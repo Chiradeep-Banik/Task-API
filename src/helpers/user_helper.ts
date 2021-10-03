@@ -1,11 +1,12 @@
-import { user,IUser } from "../models/user_model";
+import { user } from "../models/user_model";
 import * as dotenv from 'dotenv';
 import { createHash } from "crypto";
 import PasswordValidator from "password-validator";
 import { sign } from 'jsonwebtoken';
-import {  Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
+import { IUser } from '../custom';
+import { IRequest } from '../custom';
 dotenv.config();
-import { env } from 'node:process'
 
 //Hashing the password with sha256
 var isStrongPassword = new PasswordValidator();
@@ -31,7 +32,7 @@ type update_return = {
     to_update:boolean,
     has_pass:boolean
 };
-export var user_update_validator = (value:Request, value_set:Set<string>):update_return=>{
+export var user_update_validator = (value:IRequest, value_set:Set<string>):update_return=>{
     var data = Object.keys(value.body);
     var to_update = true;
     var has_pass = false;
@@ -48,8 +49,7 @@ export var user_update_validator = (value:Request, value_set:Set<string>):update
 }
 //User token creater 
 export var generate_token = async (id:string):Promise<string>=>{
-    var secret = env.SECRET || "123";
-    var token = sign({ _id: id.toString(),date: Date.now() }, secret);
+    var token = sign({ _id: id.toString()}, process.env.SECRET_KEY as string);
     return token;
 };
 

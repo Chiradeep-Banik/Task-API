@@ -1,6 +1,5 @@
-import { Request } from "express";
-
-export var task_update_validator = (value:Request, value_set:Set<string>):Boolean=>{
+import { IRequest } from '../custom';
+export var task_update_validator = (value:IRequest, value_set:Set<string>):Boolean=>{
     var data = Object.keys(value.body);
     var to_update = true;
     for(var i = 0; i < data.length; i++){

@@ -1,11 +1,12 @@
-import { Router,Request,Response } from 'express';
+import { Router, Response } from 'express';
 import { task_update_validator } from "../helpers/task_helper";
 import { task } from '../models/task_model';
+import { IRequest } from '../custom';
 
 export const router = Router();
 
 //POST ----------------------------------------------------------------------------------------------
-router.post('/tasks', async (req:Request, res:Response) => {
+router.post('/tasks', async (req:IRequest, res:Response) => {
     try{
         var create_promise = await task.create(req.body);
         res.status(201).send(create_promise);
@@ -16,7 +17,7 @@ router.post('/tasks', async (req:Request, res:Response) => {
 //POST ----------------------------------------------------------------------------------------------
 
 //GET -----------------------------------------------------------------------------------------------
-router.get('/tasks', async (req:Request, res:Response):Promise<void> => {
+router.get('/tasks', async (req:IRequest, res:Response):Promise<void> => {
     try{
         var find_promise = await task.find({});
         if(find_promise.length != 0)
@@ -27,7 +28,7 @@ router.get('/tasks', async (req:Request, res:Response):Promise<void> => {
         res.status(400).send(err);
     };
 });
-router.get('/tasks/:id', async (req:Request,res:Response):Promise<void>=>{
+router.get('/tasks/:id', async (req:IRequest,res:Response):Promise<void>=>{
     try{
         var id = req.params.id;
         var find_promise = await task.find({_id: id});
@@ -42,7 +43,7 @@ router.get('/tasks/:id', async (req:Request,res:Response):Promise<void>=>{
 //GET ------------------------------------------------------------------------------------------------
 
 //DELETE----------------------------------------------------------------------------------------------
-router.delete('/tasks', async (req:Request,res:Response):Promise<void>=>{    
+router.delete('/tasks', async (req:IRequest,res:Response):Promise<void>=>{    
     try{
         var delete_promise = await task.deleteMany({});
         if(delete_promise.deletedCount != 0)
@@ -53,7 +54,7 @@ router.delete('/tasks', async (req:Request,res:Response):Promise<void>=>{
         res.status(400).send(err);
     }
 });
-router.delete('/tasks/:id', async (req:Request,res:Response):Promise<void>=>{
+router.delete('/tasks/:id', async (req:IRequest,res:Response):Promise<void>=>{
     try{
         var id = req.params.id;
         var delete_promise = await task.deleteOne({_id: id});
@@ -68,7 +69,7 @@ router.delete('/tasks/:id', async (req:Request,res:Response):Promise<void>=>{
 //DELETE-----------------------------------------------------------------------------------------------
 
 //UPDATE------------------------------------------------------------------------------------------------
-router.put("/tasks/:id", async (req:Request,res:Response):Promise<void>=>{
+router.put("/tasks/:id", async (req:IRequest,res:Response):Promise<void>=>{
     const can_update = new Set(["description", "isCompleted","name"]);
     if(!task_update_validator(req, can_update)){
         res.status(400).send("Invalid update");
