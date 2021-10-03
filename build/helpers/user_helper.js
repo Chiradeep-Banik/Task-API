@@ -38,7 +38,6 @@ const crypto_1 = require("crypto");
 const password_validator_1 = __importDefault(require("password-validator"));
 const jsonwebtoken_1 = require("jsonwebtoken");
 dotenv.config();
-const node_process_1 = require("node:process");
 //Hashing the password with sha256
 var isStrongPassword = new password_validator_1.default();
 isStrongPassword.is().min(8).is().max(100).has().uppercase().has().lowercase().has().digits().has().not().spaces().has().symbols();
@@ -81,8 +80,7 @@ var user_update_validator = (value, value_set) => {
 exports.user_update_validator = user_update_validator;
 //User token creater 
 var generate_token = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    var secret = node_process_1.env.SECRET || "123";
-    var token = (0, jsonwebtoken_1.sign)({ _id: id.toString(), date: Date.now() }, secret);
+    var token = (0, jsonwebtoken_1.sign)({ _id: id.toString() }, process.env.SECRET_KEY);
     return token;
 });
 exports.generate_token = generate_token;

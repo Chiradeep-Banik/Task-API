@@ -22,8 +22,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.user = void 0;
 const mongoose_1 = require("mongoose");
 const emailValidator = __importStar(require("email-validator"));
-;
-;
 const user_schema = new mongoose_1.Schema({
     name: {
         type: String,

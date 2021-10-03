@@ -11,29 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = void 0;
 const user_model_1 = require("../models/user_model");
+const jsonwebtoken_1 = require("jsonwebtoken");
 //Authentication middleware
 var auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var token = req.body.token;
-    var id = req.params.id;
-    if (token) {
-        try {
-            var m_user = yield user_model_1.user.findById(id);
-            if (m_user !== null) {
-                for (var i = 0; i < m_user.tokens.length; i++) {
-                    if (m_user.tokens[i].token === token) {
-                        next();
-                        return;
-                    }
-                }
-            }
-            throw ("Invalid token");
-        }
-        catch (err) {
-            res.status(401).send(err);
-        }
+    try {
+        var token = req.headers.authorization.replace('Bearer ', '');
+        if (!token)
+            throw new Error("No token provided");
+        var decoded = (0, jsonwebtoken_1.verify)(token, process.env.SECRET_KEY);
+        if (!decoded)
+            throw new Error("Invalid Token");
+        var my_user = yield user_model_1.user.find({ _id: decoded._id, "tokens.token": token });
+        console.log(my_user);
+        req.req_user = my_user[0];
+        req.token = token;
+        next();
     }
-    else {
-        res.send("No token provided");
+    catch (error) {
+        res.status(400).send(`Invalid ${error}`);
     }
 });
 exports.auth = auth;

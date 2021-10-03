@@ -21,13 +21,9 @@ const auth_1 = require("../middlewares/auth");
 exports.router = (0, express_1.Router)();
 const ObjectId = mongoose_1.default.Types.ObjectId;
 // GET-----------------------------------------------------------------------------------------------------
-exports.router.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var find_promise = yield user_model_1.user.find({});
-        if (find_promise.length != 0)
-            res.status(200).send(find_promise);
-        else
-            res.status(404).send("Not found");
+        res.status(200).send(req.req_user);
     }
     catch (err) {
         res.status(400).send(err);
@@ -78,6 +74,37 @@ exports.router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void
         res.status(400).send(err);
     }
 }));
+//LOGOUT
+exports.router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.req_user);
+        var my_user = req.req_user;
+        for (let i = 0; i < req.req_user.tokens.length; i++) {
+            if (my_user.tokens[i].token == req.token) {
+                my_user.tokens.splice(i, 1);
+                break;
+            }
+        }
+        console.log(my_user);
+        yield my_user.save();
+        res.status(200).send(my_user);
+    }
+    catch (err) {
+        res.status(400).send(err);
+    }
+}));
+//LOGOUT ALL
+exports.router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        var my_user = req.req_user;
+        my_user.tokens = [];
+        yield my_user.save();
+        res.status(200).send(my_user);
+    }
+    catch (err) {
+        res.status(400).send(err);
+    }
+}));
 //POST ----------------------------------------------------------------------------------------------
 //DELETE-----------------------------------------------------------------------------------------------
 exports.router.delete('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -92,7 +119,7 @@ exports.router.delete('/users', (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(400).send(err);
     }
 }));
-exports.router.delete('/users/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.router.delete('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
         var delete_promise = yield user_model_1.user.deleteOne({ _id: id });
