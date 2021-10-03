@@ -1,15 +1,6 @@
-import { Schema,model,Document} from 'mongoose';
+import { Schema,model } from 'mongoose';
 import * as emailValidator from 'email-validator';
-interface IToken {
-    token: string;
-};
-export interface IUser extends Document {
-    name: string;
-    email: string;
-    password: string;
-    tokens: Array<IToken>;
-    _id: string;
-};
+import {  IUser } from '../custom';
 
 const user_schema = new Schema<IUser>({
     name:{

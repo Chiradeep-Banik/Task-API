@@ -1,9 +1,11 @@
-import { user,IUser } from "../models/user_model";
+import { user } from "../models/user_model";
 import * as dotenv from 'dotenv';
 import { createHash } from "crypto";
 import PasswordValidator from "password-validator";
 import { sign } from 'jsonwebtoken';
-import {  Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
+import { IUser } from '../custom';
+import { IRequest } from '../custom';
 dotenv.config();
 
 //Hashing the password with sha256
@@ -30,7 +32,7 @@ type update_return = {
     to_update:boolean,
     has_pass:boolean
 };
-export var user_update_validator = (value:Request, value_set:Set<string>):update_return=>{
+export var user_update_validator = (value:IRequest, value_set:Set<string>):update_return=>{
     var data = Object.keys(value.body);
     var to_update = true;
     var has_pass = false;
