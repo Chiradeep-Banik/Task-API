@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generate_token = exports.user_update_validator = exports.check_user = exports.pass_to_hash = void 0;
+exports.get_public_fields = exports.generate_token = exports.user_update_validator = exports.check_user = exports.pass_to_hash = void 0;
 const user_model_1 = require("../models/user_model");
 const dotenv = __importStar(require("dotenv"));
 const crypto_1 = require("crypto");
@@ -84,3 +84,12 @@ var generate_token = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return token;
 });
 exports.generate_token = generate_token;
+//Get the public feilds of the user
+var get_public_fields = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    return {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+    };
+});
+exports.get_public_fields = get_public_fields;

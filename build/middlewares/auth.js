@@ -22,7 +22,8 @@ var auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         if (!decoded)
             throw new Error("Invalid Token");
         var my_user = yield user_model_1.user.find({ _id: decoded._id, "tokens.token": token });
-        console.log(my_user);
+        if (my_user.length == 0)
+            throw new Error("Invalid Token");
         req.req_user = my_user[0];
         req.token = token;
         next();

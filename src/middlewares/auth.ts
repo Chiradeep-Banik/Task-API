@@ -12,7 +12,7 @@ export var auth = async (req:IRequest, res:Response, next:NextFunction):Promise<
         var decoded = verify(token, process.env.SECRET_KEY as string) as JwtPayload;
         if(!decoded) throw new Error("Invalid Token");
         var my_user = await user.find({ _id:decoded._id, "tokens.token":token });
-        console.log(my_user);
+        if(my_user.length == 0) throw new Error("Invalid Token");
         req.req_user = my_user[0];
         req.token = token;
         next();

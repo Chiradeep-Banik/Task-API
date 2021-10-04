@@ -3,9 +3,7 @@ import * as dotenv from 'dotenv';
 import { createHash } from "crypto";
 import PasswordValidator from "password-validator";
 import { sign } from 'jsonwebtoken';
-import { Response, NextFunction } from "express";
-import { IUser } from '../custom';
-import { IRequest } from '../custom';
+import { IUser, IRequest } from '../custom';
 dotenv.config();
 
 //Hashing the password with sha256
@@ -51,5 +49,14 @@ export var user_update_validator = (value:IRequest, value_set:Set<string>):updat
 export var generate_token = async (id:string):Promise<string>=>{
     var token = sign({ _id: id.toString()}, process.env.SECRET_KEY as string);
     return token;
+};
+
+//Get the public feilds of the user
+export var get_public_fields = async (user:IUser):Promise<Object>=>{
+    return {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+    };
 };
 

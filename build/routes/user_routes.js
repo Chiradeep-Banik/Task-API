@@ -23,36 +23,24 @@ const ObjectId = mongoose_1.default.Types.ObjectId;
 // GET-----------------------------------------------------------------------------------------------------
 exports.router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.status(200).send(req.req_user);
+        res.status(200).send(yield (0, user_helper_1.get_public_fields)(req.req_user));
     }
     catch (err) {
         res.status(400).send(err);
     }
     ;
 }));
-exports.router.get('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        var id = req.params.id;
-        var find_promise = yield user_model_1.user.find({ _id: id });
-        if (find_promise.length != 0)
-            res.status(200).send(find_promise);
-        else
-            res.status(404).send("Not found");
-    }
-    catch (err) {
-        res.status(400).send(err);
-    }
-}));
 //GET-----------------------------------------------------------------------------------------------
 //POST ----------------------------------------------------------------------------------------------
-exports.router.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//SIGNUP
+exports.router.post('/users/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         req.body.password = (0, user_helper_1.pass_to_hash)(req.body.password);
         req.body._id = new ObjectId();
         req.body.tokens = [{ token: yield (0, user_helper_1.generate_token)(req.body._id) }];
         var create_promise = yield user_model_1.user.create(req.body);
-        console.log(create_promise);
-        res.status(201).send(create_promise);
+        res.header('Authorization', `Bearer ${req.body.tokens[0].token}`);
+        res.status(201).send(yield (0, user_helper_1.get_public_fields)(create_promise));
     }
     catch (err) {
         res.status(400).send(err);
@@ -65,9 +53,9 @@ exports.router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void
         var my_user = yield (0, user_helper_1.check_user)(req.body.email, req.body.password);
         var token = yield (0, user_helper_1.generate_token)(my_user._id);
         my_user.tokens.push({ token: token });
-        console.log(my_user);
         yield my_user.save();
-        res.status(200).send({ my_user });
+        res.header('Authorization', `Bearer ${token}`);
+        res.status(200).send(yield (0, user_helper_1.get_public_fields)(my_user));
     }
     catch (err) {
         console.log(err);
@@ -87,7 +75,7 @@ exports.router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0
         }
         console.log(my_user);
         yield my_user.save();
-        res.status(200).send(my_user);
+        res.status(200).send(yield (0, user_helper_1.get_public_fields)(my_user));
     }
     catch (err) {
         res.status(400).send(err);
@@ -99,7 +87,7 @@ exports.router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(voi
         var my_user = req.req_user;
         my_user.tokens = [];
         yield my_user.save();
-        res.status(200).send(my_user);
+        res.status(200).send(yield (0, user_helper_1.get_public_fields)(my_user));
     }
     catch (err) {
         res.status(400).send(err);
@@ -107,22 +95,10 @@ exports.router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(voi
 }));
 //POST ----------------------------------------------------------------------------------------------
 //DELETE-----------------------------------------------------------------------------------------------
-exports.router.delete('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var delete_promise = yield user_model_1.user.deleteMany({});
-        if (delete_promise.deletedCount != 0)
-            res.status(200).send(`Deleted all users ${delete_promise}`);
-        else
-            res.status(404).send("No users found");
-    }
-    catch (err) {
-        res.status(400).send(err);
-    }
-}));
-exports.router.delete('/users/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        var id = req.params.id;
-        var delete_promise = yield user_model_1.user.deleteOne({ _id: id });
+        var my_user = req.req_user;
+        var delete_promise = yield user_model_1.user.deleteOne({ _id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(200).send(`Deleted user ${delete_promise}`);
         else
@@ -134,7 +110,7 @@ exports.router.delete('/users/:id', (req, res) => __awaiter(void 0, void 0, void
 }));
 //DELETE-------------------------------------------------------------------------------------------------
 //UPDATE-------------------------------------------------------------------------------------------------
-exports.router.put("/users/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.router.put("/users/me", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const can_update = new Set(["email", "name", "password"]);
     var { to_update, has_pass } = (0, user_helper_1.user_update_validator)(req, can_update);
     if (!to_update) {
@@ -142,12 +118,12 @@ exports.router.put("/users/:id", (req, res) => __awaiter(void 0, void 0, void 0,
     }
     else
         try {
-            var id = req.params.id;
+            var my_user = req.req_user;
             if (has_pass == true)
                 req.body.password = (0, user_helper_1.pass_to_hash)(req.body.password);
-            var update_promise = yield user_model_1.user.findOneAndUpdate({ _id: id }, req.body, { runValidators: true, new: true });
+            var update_promise = yield user_model_1.user.findOneAndUpdate({ _id: my_user._id }, req.body, { runValidators: true, new: true });
             console.log(update_promise);
-            res.status(204).send(update_promise);
+            res.status(204).send(yield (0, user_helper_1.get_public_fields)(update_promise));
         }
         catch (e) {
             res.status(400).send(e);
