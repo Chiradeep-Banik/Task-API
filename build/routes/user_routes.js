@@ -12,16 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
+exports.user_router = void 0;
 const express_1 = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_model_1 = require("../models/user_model");
 const user_helper_1 = require("../helpers/user_helper");
 const auth_1 = require("../middlewares/auth");
-exports.router = (0, express_1.Router)();
+exports.user_router = (0, express_1.Router)();
 const ObjectId = mongoose_1.default.Types.ObjectId;
 // GET-----------------------------------------------------------------------------------------------------
-exports.router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.status(200).send(yield (0, user_helper_1.get_public_fields)(req.req_user));
     }
@@ -33,7 +33,7 @@ exports.router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, voi
 //GET-----------------------------------------------------------------------------------------------
 //POST ----------------------------------------------------------------------------------------------
 //SIGNUP
-exports.router.post('/users/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         req.body.password = (0, user_helper_1.pass_to_hash)(req.body.password);
         req.body._id = new ObjectId();
@@ -48,7 +48,7 @@ exports.router.post('/users/signup', (req, res) => __awaiter(void 0, void 0, voi
     ;
 }));
 //LOGIN
-exports.router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = yield (0, user_helper_1.check_user)(req.body.email, req.body.password);
         var token = yield (0, user_helper_1.generate_token)(my_user._id);
@@ -63,7 +63,7 @@ exports.router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void
     }
 }));
 //LOGOUT
-exports.router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.req_user);
         var my_user = req.req_user;
@@ -82,7 +82,7 @@ exports.router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0
     }
 }));
 //LOGOUT ALL
-exports.router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
         my_user.tokens = [];
@@ -95,7 +95,7 @@ exports.router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(voi
 }));
 //POST ----------------------------------------------------------------------------------------------
 //DELETE-----------------------------------------------------------------------------------------------
-exports.router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
         var delete_promise = yield user_model_1.user.deleteOne({ _id: my_user._id });
@@ -110,7 +110,7 @@ exports.router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, 
 }));
 //DELETE-------------------------------------------------------------------------------------------------
 //UPDATE-------------------------------------------------------------------------------------------------
-exports.router.put("/users/me", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.put("/users/me", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const can_update = new Set(["email", "name", "password"]);
     var { to_update, has_pass } = (0, user_helper_1.user_update_validator)(req, can_update);
     if (!to_update) {

@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
+exports.task_router = void 0;
 const express_1 = require("express");
 const task_helper_1 = require("../helpers/task_helper");
 const task_model_1 = require("../models/task_model");
-exports.router = (0, express_1.Router)();
+exports.task_router = (0, express_1.Router)();
 //POST ----------------------------------------------------------------------------------------------
-exports.router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var create_promise = yield task_model_1.task.create(req.body);
         res.status(201).send(create_promise);
@@ -27,7 +27,7 @@ exports.router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, fu
 }));
 //POST ----------------------------------------------------------------------------------------------
 //GET -----------------------------------------------------------------------------------------------
-exports.router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var find_promise = yield task_model_1.task.find({});
         if (find_promise.length != 0)
@@ -40,7 +40,7 @@ exports.router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     ;
 }));
-exports.router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
         var find_promise = yield task_model_1.task.find({ _id: id });
@@ -55,7 +55,7 @@ exports.router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0,
 }));
 //GET ------------------------------------------------------------------------------------------------
 //DELETE----------------------------------------------------------------------------------------------
-exports.router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var delete_promise = yield task_model_1.task.deleteMany({});
         if (delete_promise.deletedCount != 0)
@@ -67,7 +67,7 @@ exports.router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(400).send(err);
     }
 }));
-exports.router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
         var delete_promise = yield task_model_1.task.deleteOne({ _id: id });
@@ -82,7 +82,7 @@ exports.router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void
 }));
 //DELETE-----------------------------------------------------------------------------------------------
 //UPDATE------------------------------------------------------------------------------------------------
-exports.router.put("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.put("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const can_update = new Set(["description", "isCompleted", "name"]);
     if (!(0, task_helper_1.task_update_validator)(req, can_update)) {
         res.status(400).send("Invalid update");

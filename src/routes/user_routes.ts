@@ -5,11 +5,11 @@ import { pass_to_hash, check_user, user_update_validator, generate_token, get_pu
 import { auth } from '../middlewares/auth';
 import { IRequest, IToken, IUser } from '../custom';
 
-export const router = Router();
+export const user_router = Router();
 const ObjectId = mongoose.Types.ObjectId;
 
 // GET-----------------------------------------------------------------------------------------------------
-router.get('/users/me', auth ,async (req:IRequest, res:Response):Promise<void> => {
+user_router.get('/users/me', auth ,async (req:IRequest, res:Response):Promise<void> => {
     try {
         res.status(200).send(await get_public_fields(req.req_user as IUser));
     } catch (err:unknown) {
@@ -20,7 +20,7 @@ router.get('/users/me', auth ,async (req:IRequest, res:Response):Promise<void> =
 
 //POST ----------------------------------------------------------------------------------------------
         //SIGNUP
-router.post('/users/signup', async (req:IRequest, res:Response):Promise<void> => {
+user_router.post('/users/signup', async (req:IRequest, res:Response):Promise<void> => {
     try {
         req.body.password = pass_to_hash(req.body.password);
         req.body._id = new ObjectId();
@@ -33,7 +33,7 @@ router.post('/users/signup', async (req:IRequest, res:Response):Promise<void> =>
     };
 });
         //LOGIN
-router.post('/users/login', async (req:IRequest, res:Response):Promise<void> => {
+user_router.post('/users/login', async (req:IRequest, res:Response):Promise<void> => {
     try {
         var my_user = await check_user(req.body.email, req.body.password);
         var token = await generate_token(my_user._id);
@@ -47,7 +47,7 @@ router.post('/users/login', async (req:IRequest, res:Response):Promise<void> => 
     }
 });
         //LOGOUT
-router.post('/users/logout',auth, async (req:IRequest, res:Response):Promise<void>=>{
+user_router.post('/users/logout',auth, async (req:IRequest, res:Response):Promise<void>=>{
     try{
         console.log(req.req_user);
         var my_user = req.req_user as IUser;
@@ -65,7 +65,7 @@ router.post('/users/logout',auth, async (req:IRequest, res:Response):Promise<voi
     }
 });
         //LOGOUT ALL
-router.post('/users/logoutall',auth, async (req:IRequest, res:Response):Promise<void>=>{
+user_router.post('/users/logoutall',auth, async (req:IRequest, res:Response):Promise<void>=>{
     try{
         var my_user = req.req_user as IUser;
         my_user.tokens = [];
@@ -79,7 +79,7 @@ router.post('/users/logoutall',auth, async (req:IRequest, res:Response):Promise<
 
 //DELETE-----------------------------------------------------------------------------------------------
 
-router.delete('/users/me',auth, async (req:IRequest, res:Response):Promise<void> => {
+user_router.delete('/users/me',auth, async (req:IRequest, res:Response):Promise<void> => {
     try {
         var my_user = req.req_user as IUser;
         var delete_promise = await user.deleteOne({ _id: my_user._id });
@@ -95,7 +95,7 @@ router.delete('/users/me',auth, async (req:IRequest, res:Response):Promise<void>
 
 
 //UPDATE-------------------------------------------------------------------------------------------------
-router.put("/users/me",auth, async (req:IRequest, res:Response):Promise<void> => {
+user_router.put("/users/me",auth, async (req:IRequest, res:Response):Promise<void> => {
     const can_update = new Set(["email", "name", "password"]);
     var { to_update, has_pass } = user_update_validator(req, can_update);
     if (!to_update) {

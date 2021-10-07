@@ -31,8 +31,11 @@ const task_routes_1 = require("./routes/task_routes");
 const user_routes_1 = require("./routes/user_routes");
 const PORT = process.env.PORT;
 app.use(express_1.default.json());
-app.use(user_routes_1.router);
-app.use(task_routes_1.router);
+app.use(user_routes_1.user_router);
+app.use(task_routes_1.task_router);
+app.get("/", (req, res) => {
+    res.send("Hello World");
+});
 app.get("*", (req, res) => {
     res.send("404 NOT FOUND");
 });
