@@ -4,6 +4,12 @@ import { Request } from 'express';
 export interface IToken {
     token: string;
 }
+export interface ITask {
+    name: string;
+    description: string;
+    isCompleted: boolean;
+    creater_id: string;
+}
 export interface IUser extends Document {
     name: string;
     email: string;
@@ -12,6 +18,6 @@ export interface IUser extends Document {
     _id: string;
 }
 export interface IRequest extends Request {
-    req_user?: IUser | Array<IUser>;
+    req_user?: IUser;
     token?: string;
 }

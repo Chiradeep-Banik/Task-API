@@ -1,27 +1,27 @@
-import { Schema,model } from "mongoose";
-
-export interface ITask {
-    name:string;
-    description:string;
-    isCompleted:boolean;
-}
+import { Schema, model } from "mongoose";
+import { ITask } from "../custom";
 
 const task_schema = new Schema<ITask>({
-    name:{
+    name: {
+        type: String,
+        trim: true,
+        required: true,
+        unique: true
+    },
+    description: {
         type: String,
         trim: true,
         required: true
     },
-    description:{
-        type: String,
-        trim: true,
-        required: true
-    },
-    isCompleted:{
+    isCompleted: {
         type: Boolean,
         trim: true,
         default: false
+    },
+    creater_id: {
+        type: String,
+        required: true
     }
 });
 
-export const task = model<ITask>('task', task_schema,'Tasks');
+export const task = model<ITask>('task', task_schema, 'Tasks');

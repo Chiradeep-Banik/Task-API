@@ -3,10 +3,9 @@ import mongoose from 'mongoose';
 import { user } from '../models/user_model';
 import { pass_to_hash, check_user, user_update_validator, generate_token, get_public_fields } from '../helpers/user_helper';
 import { auth } from '../middlewares/auth';
-import { IRequest, IToken, IUser } from '../custom';
+import { IRequest, IUser } from '../custom';
 
 export const user_router = Router();
-const ObjectId = mongoose.Types.ObjectId;
 
 // GET-----------------------------------------------------------------------------------------------------
 user_router.get('/users/me', auth, async (req: IRequest, res: Response): Promise<void> => {
@@ -23,12 +22,15 @@ user_router.get('/users/me', auth, async (req: IRequest, res: Response): Promise
 user_router.post('/users/signup', async (req: IRequest, res: Response): Promise<void> => {
     try {
         req.body.password = pass_to_hash(req.body.password);
-        req.body._id = new ObjectId();
+        req.body._id = new mongoose.Types.ObjectId();
         req.body.tokens = [{ token: await generate_token(req.body._id) }];
+        console.log(req.body);
         var create_promise = await user.create(req.body);
+        console.log(req.body);
         res.header('Authorization', `Bearer ${req.body.tokens[0].token}`);
         res.status(201).send(await get_public_fields(create_promise));
-    } catch (err: any) {
+    } catch (err: unknown) {
+        console.log(`In Catch ----  ${err}`);
         res.status(401).send(err);
     };
 });
