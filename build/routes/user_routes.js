@@ -43,7 +43,7 @@ exports.user_router.post('/users/signup', (req, res) => __awaiter(void 0, void 0
         res.status(201).send(yield (0, user_helper_1.get_public_fields)(create_promise));
     }
     catch (err) {
-        res.status(400).send(err);
+        res.status(401).send(err);
     }
     ;
 }));
