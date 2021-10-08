@@ -34,6 +34,7 @@ const user_schema = new mongoose_1.Schema({
         trim: true,
         toLowerCase: true,
         unique: true,
+        minlength: 3,
         validate: {
             validator(value) {
                 if (!(emailValidator.validate(value))) {

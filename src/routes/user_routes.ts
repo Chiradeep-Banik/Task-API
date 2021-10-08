@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import mongoose from 'mongoose';
 import { user } from '../models/user_model';
+import { task } from '../models/task_model';
 import { pass_to_hash, check_user, user_update_validator, generate_token, get_public_fields } from '../helpers/user_helper';
 import { auth } from '../middlewares/auth';
 import { IRequest, IUser } from '../custom';
@@ -49,7 +50,7 @@ user_router.post('/users/login', async (req: IRequest, res: Response): Promise<v
     }
 });
 //LOGOUT
-user_router.post('/users/logout', auth, async (req: IRequest, res: Response): Promise<void> => {
+user_router.post('/users/me/logout', auth, async (req: IRequest, res: Response): Promise<void> => {
     try {
         console.log(req.req_user);
         var my_user = req.req_user as IUser;
@@ -67,7 +68,7 @@ user_router.post('/users/logout', auth, async (req: IRequest, res: Response): Pr
     }
 });
 //LOGOUT ALL
-user_router.post('/users/logoutall', auth, async (req: IRequest, res: Response): Promise<void> => {
+user_router.post('/users/me/logoutall', auth, async (req: IRequest, res: Response): Promise<void> => {
     try {
         var my_user = req.req_user as IUser;
         my_user.tokens = [];
@@ -85,8 +86,9 @@ user_router.delete('/users/me', auth, async (req: IRequest, res: Response): Prom
     try {
         var my_user = req.req_user as IUser;
         var delete_promise = await user.deleteOne({ _id: my_user._id });
+        var task_del_promise = await task.deleteMany({creater_id: my_user._id});
         if (delete_promise.deletedCount != 0)
-            res.status(200).send(`Deleted user ${delete_promise}`);
+            res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
         else
             res.status(404).send("No users found");
     } catch (err: unknown) {

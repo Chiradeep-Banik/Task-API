@@ -34,9 +34,9 @@ app.use(express_1.default.json());
 app.use(user_routes_1.user_router);
 app.use(task_routes_1.task_router);
 app.get("/", (req, res) => {
-    res.send("Hello World");
+    res.send('<h1 style="text-align:center">Server started Properlly........</h1>');
 });
 app.get("*", (req, res) => {
-    res.send("404 NOT FOUND");
+    res.send("<h1>404 NOT FOUND......</h1>");
 });
 app.listen(PORT, () => console.log(`Listening on port ${PORT} !!!!!`));

@@ -16,10 +16,10 @@ exports.user_router = void 0;
 const express_1 = require("express");
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_model_1 = require("../models/user_model");
+const task_model_1 = require("../models/task_model");
 const user_helper_1 = require("../helpers/user_helper");
 const auth_1 = require("../middlewares/auth");
 exports.user_router = (0, express_1.Router)();
-const ObjectId = mongoose_1.default.Types.ObjectId;
 // GET-----------------------------------------------------------------------------------------------------
 exports.user_router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -36,13 +36,16 @@ exports.user_router.get('/users/me', auth_1.auth, (req, res) => __awaiter(void 0
 exports.user_router.post('/users/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         req.body.password = (0, user_helper_1.pass_to_hash)(req.body.password);
-        req.body._id = new ObjectId();
+        req.body._id = new mongoose_1.default.Types.ObjectId();
         req.body.tokens = [{ token: yield (0, user_helper_1.generate_token)(req.body._id) }];
+        console.log(req.body);
         var create_promise = yield user_model_1.user.create(req.body);
+        console.log(req.body);
         res.header('Authorization', `Bearer ${req.body.tokens[0].token}`);
         res.status(201).send(yield (0, user_helper_1.get_public_fields)(create_promise));
     }
     catch (err) {
+        console.log(`In Catch ----  ${err}`);
         res.status(401).send(err);
     }
     ;
@@ -63,7 +66,7 @@ exports.user_router.post('/users/login', (req, res) => __awaiter(void 0, void 0,
     }
 }));
 //LOGOUT
-exports.user_router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/me/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.req_user);
         var my_user = req.req_user;
@@ -82,7 +85,7 @@ exports.user_router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(v
     }
 }));
 //LOGOUT ALL
-exports.user_router.post('/users/logoutall', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.user_router.post('/users/me/logoutall', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
         my_user.tokens = [];
@@ -99,8 +102,9 @@ exports.user_router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(voi
     try {
         var my_user = req.req_user;
         var delete_promise = yield user_model_1.user.deleteOne({ _id: my_user._id });
+        var task_del_promise = yield task_model_1.task.deleteMany({ creater_id: my_user._id });
         if (delete_promise.deletedCount != 0)
-            res.status(200).send(`Deleted user ${delete_promise}`);
+            res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
         else
             res.status(404).send("No users found");
     }

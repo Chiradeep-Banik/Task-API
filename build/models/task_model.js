@@ -6,7 +6,8 @@ const task_schema = new mongoose_1.Schema({
     name: {
         type: String,
         trim: true,
-        required: true
+        required: true,
+        unique: true
     },
     description: {
         type: String,
@@ -17,6 +18,10 @@ const task_schema = new mongoose_1.Schema({
         type: Boolean,
         trim: true,
         default: false
+    },
+    creater_id: {
+        type: String,
+        required: true
     }
 });
 exports.task = (0, mongoose_1.model)('task', task_schema, 'Tasks');

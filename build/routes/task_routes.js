@@ -13,10 +13,13 @@ exports.task_router = void 0;
 const express_1 = require("express");
 const task_helper_1 = require("../helpers/task_helper");
 const task_model_1 = require("../models/task_model");
+const auth_1 = require("../middlewares/auth");
 exports.task_router = (0, express_1.Router)();
 //POST ----------------------------------------------------------------------------------------------
-exports.task_router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.post('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        var my_user = req.req_user;
+        req.body.creater_id = my_user._id;
         var create_promise = yield task_model_1.task.create(req.body);
         res.status(201).send(create_promise);
     }
@@ -26,10 +29,10 @@ exports.task_router.post('/tasks', (req, res) => __awaiter(void 0, void 0, void 
     ;
 }));
 //POST ----------------------------------------------------------------------------------------------
-//GET -----------------------------------------------------------------------------------------------
-exports.task_router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.get('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var find_promise = yield task_model_1.task.find({});
+        var my_user = req.req_user;
+        var find_promise = yield task_model_1.task.find({ creater_id: my_user._id });
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -40,10 +43,11 @@ exports.task_router.get('/tasks', (req, res) => __awaiter(void 0, void 0, void 0
     }
     ;
 }));
-exports.task_router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.get('/users/me/tasks/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
-        var find_promise = yield task_model_1.task.find({ _id: id });
+        var my_user = req.req_user;
+        var find_promise = yield task_model_1.task.find({ _id: id, creater_id: my_user._id });
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -55,9 +59,10 @@ exports.task_router.get('/tasks/:id', (req, res) => __awaiter(void 0, void 0, vo
 }));
 //GET ------------------------------------------------------------------------------------------------
 //DELETE----------------------------------------------------------------------------------------------
-exports.task_router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.delete('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        var delete_promise = yield task_model_1.task.deleteMany({});
+        var my_user = req.req_user;
+        var delete_promise = yield task_model_1.task.deleteMany({ creater_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted all ${delete_promise}`);
         else
@@ -67,10 +72,11 @@ exports.task_router.delete('/tasks', (req, res) => __awaiter(void 0, void 0, voi
         res.status(400).send(err);
     }
 }));
-exports.task_router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.delete('/users/me/tasks/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var id = req.params.id;
-        var delete_promise = yield task_model_1.task.deleteOne({ _id: id });
+        var my_user = req.req_user;
+        var delete_promise = yield task_model_1.task.deleteOne({ _id: id, creater_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted ${delete_promise}`);
         else
@@ -82,15 +88,16 @@ exports.task_router.delete('/tasks/:id', (req, res) => __awaiter(void 0, void 0,
 }));
 //DELETE-----------------------------------------------------------------------------------------------
 //UPDATE------------------------------------------------------------------------------------------------
-exports.task_router.put("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.task_router.put("/users/me/tasks/:id", auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const can_update = new Set(["description", "isCompleted", "name"]);
     if (!(0, task_helper_1.task_update_validator)(req, can_update)) {
         res.status(400).send("Invalid update");
     }
     else
         try {
+            var my_user = req.req_user;
             var id = req.params.id;
-            var update_promise = yield task_model_1.task.findOneAndUpdate({ _id: id }, req.body, { runValidators: true });
+            var update_promise = yield task_model_1.task.findOneAndUpdate({ _id: id, creater_id: my_user._id }, req.body, { runValidators: true });
             res.status(204).send(update_promise);
         }
         catch (e) {
