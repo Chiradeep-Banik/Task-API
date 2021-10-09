@@ -19,7 +19,7 @@ exports.task_router = (0, express_1.Router)();
 exports.task_router.post('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
-        req.body.creater_id = my_user._id;
+        req.body.creator_id = my_user._id;
         var create_promise = yield task_model_1.task.create(req.body);
         res.status(201).send(create_promise);
     }
@@ -29,10 +29,26 @@ exports.task_router.post('/users/me/tasks', auth_1.auth, (req, res) => __awaiter
     ;
 }));
 //POST ----------------------------------------------------------------------------------------------
+//GET ------------------------------------------------------------------------------------------------
+//GET /users/me/tasks?isCompleted=true
+//GET /users/me/tasks?limit=10
 exports.task_router.get('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
-        var find_promise = yield task_model_1.task.find({ creater_id: my_user._id });
+        if (req.query.limit !== undefined) {
+            if (req.query.isCompleted === undefined) {
+                var find_promise = yield task_model_1.task.find({ creator_id: my_user._id }).limit(parseInt(req.query.limit));
+            }
+            else if (req.query.isCompleted === 'true') {
+                var find_promise = yield task_model_1.task.find({ creator_id: my_user._id, isCompleted: true }).limit(parseInt(req.query.limit));
+            }
+            else {
+                var find_promise = yield task_model_1.task.find({ creator_id: my_user._id, isCompleted: false }).limit(parseInt(req.query.limit));
+            }
+        }
+        else {
+            var find_promise = yield task_model_1.task.find({ creator_id: my_user._id });
+        }
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -47,7 +63,7 @@ exports.task_router.get('/users/me/tasks/:id', auth_1.auth, (req, res) => __awai
     try {
         var id = req.params.id;
         var my_user = req.req_user;
-        var find_promise = yield task_model_1.task.find({ _id: id, creater_id: my_user._id });
+        var find_promise = yield task_model_1.task.find({ _id: id, creator_id: my_user._id });
         if (find_promise.length != 0)
             res.status(200).send(find_promise);
         else
@@ -62,7 +78,7 @@ exports.task_router.get('/users/me/tasks/:id', auth_1.auth, (req, res) => __awai
 exports.task_router.delete('/users/me/tasks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         var my_user = req.req_user;
-        var delete_promise = yield task_model_1.task.deleteMany({ creater_id: my_user._id });
+        var delete_promise = yield task_model_1.task.deleteMany({ creator_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted all ${delete_promise}`);
         else
@@ -76,7 +92,7 @@ exports.task_router.delete('/users/me/tasks/:id', auth_1.auth, (req, res) => __a
     try {
         var id = req.params.id;
         var my_user = req.req_user;
-        var delete_promise = yield task_model_1.task.deleteOne({ _id: id, creater_id: my_user._id });
+        var delete_promise = yield task_model_1.task.deleteOne({ _id: id, creator_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(204).send(`Deleted ${delete_promise}`);
         else
@@ -97,7 +113,7 @@ exports.task_router.put("/users/me/tasks/:id", auth_1.auth, (req, res) => __awai
         try {
             var my_user = req.req_user;
             var id = req.params.id;
-            var update_promise = yield task_model_1.task.findOneAndUpdate({ _id: id, creater_id: my_user._id }, req.body, { runValidators: true });
+            var update_promise = yield task_model_1.task.findOneAndUpdate({ _id: id, creator_id: my_user._id }, req.body, { runValidators: true });
             res.status(204).send(update_promise);
         }
         catch (e) {

@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(user_router);
 app.use(task_router);
 app.get("/", (req: IRequest, res: Response):void => {
-    res.send('<h1 style="text-align:center">Server started Properlly........</h1>');
+    res.send('<h1 style="text-align:center">Server started Properly........</h1>');
 });
 app.get("*", (req: IRequest, res: Response):void => {
     res.send("<h1>404 NOT FOUND......</h1>");

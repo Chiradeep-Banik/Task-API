@@ -45,14 +45,14 @@ export var user_update_validator = (value:IRequest, value_set:Set<string>):updat
     }
     return { to_update, has_pass };
 }
-//User token creater 
+//User token creator 
 export var generate_token = async (id:string):Promise<string>=>{
     var token = sign({ _id: id.toString()}, process.env.SECRET_KEY as string);
     return token;
 };
 
-//Get the public feilds of the user
-export var get_public_fields = async (user:IUser):Promise<Object>=>{
+//Get the public felids of the user
+export var get_public_fields= async (user:IUser)=>{
     return {
         _id: user._id,
         name: user.name,

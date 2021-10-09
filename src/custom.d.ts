@@ -8,7 +8,7 @@ export interface ITask {
     name: string;
     description: string;
     isCompleted: boolean;
-    creater_id: string;
+    creator_id: string;
 }
 export interface IUser extends Document {
     name: string;

@@ -18,10 +18,12 @@ const task_schema = new Schema<ITask>({
         trim: true,
         default: false
     },
-    creater_id: {
+    creator_id: {
         type: String,
         required: true
     }
+},{
+    timestamps:true
 });
 
 export const task = model<ITask>('task', task_schema, 'Tasks');

@@ -102,7 +102,7 @@ exports.user_router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(voi
     try {
         var my_user = req.req_user;
         var delete_promise = yield user_model_1.user.deleteOne({ _id: my_user._id });
-        var task_del_promise = yield task_model_1.task.deleteMany({ creater_id: my_user._id });
+        var task_del_promise = yield task_model_1.task.deleteMany({ creator_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
         else
@@ -126,7 +126,6 @@ exports.user_router.put("/users/me", auth_1.auth, (req, res) => __awaiter(void 0
             if (has_pass == true)
                 req.body.password = (0, user_helper_1.pass_to_hash)(req.body.password);
             var update_promise = yield user_model_1.user.findOneAndUpdate({ _id: my_user._id }, req.body, { runValidators: true, new: true });
-            console.log(update_promise);
             res.status(204).send(yield (0, user_helper_1.get_public_fields)(update_promise));
         }
         catch (e) {

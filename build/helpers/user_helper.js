@@ -78,13 +78,13 @@ var user_update_validator = (value, value_set) => {
     return { to_update, has_pass };
 };
 exports.user_update_validator = user_update_validator;
-//User token creater 
+//User token creator 
 var generate_token = (id) => __awaiter(void 0, void 0, void 0, function* () {
     var token = (0, jsonwebtoken_1.sign)({ _id: id.toString() }, process.env.SECRET_KEY);
     return token;
 });
 exports.generate_token = generate_token;
-//Get the public feilds of the user
+//Get the public felids of the user
 var get_public_fields = (user) => __awaiter(void 0, void 0, void 0, function* () {
     return {
         _id: user._id,

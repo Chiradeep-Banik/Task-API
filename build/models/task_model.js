@@ -19,9 +19,11 @@ const task_schema = new mongoose_1.Schema({
         trim: true,
         default: false
     },
-    creater_id: {
+    creator_id: {
         type: String,
         required: true
     }
+}, {
+    timestamps: true
 });
 exports.task = (0, mongoose_1.model)('task', task_schema, 'Tasks');

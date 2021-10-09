@@ -86,7 +86,7 @@ user_router.delete('/users/me', auth, async (req: IRequest, res: Response): Prom
     try {
         var my_user = req.req_user as IUser;
         var delete_promise = await user.deleteOne({ _id: my_user._id });
-        var task_del_promise = await task.deleteMany({creater_id: my_user._id});
+        var task_del_promise = await task.deleteMany({ creator_id: my_user._id });
         if (delete_promise.deletedCount != 0)
             res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
         else
@@ -109,8 +109,7 @@ user_router.put("/users/me", auth, async (req: IRequest, res: Response): Promise
         if (has_pass == true)
             req.body.password = pass_to_hash(req.body.password);
         var update_promise = await user.findOneAndUpdate({ _id: my_user._id }, req.body, { runValidators: true, new: true });
-        console.log(update_promise);
-        res.status(204).send(await get_public_fields(update_promise));
+        res.status(204).send(await get_public_fields(update_promise as IUser));
     } catch (e: unknown) {
         res.status(400).send(e);
     }

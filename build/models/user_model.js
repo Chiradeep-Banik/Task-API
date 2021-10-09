@@ -54,5 +54,7 @@ const user_schema = new mongoose_1.Schema({
                 required: true
             }
         }]
+}, {
+    timestamps: true
 });
 exports.user = (0, mongoose_1.model)('user', user_schema, 'Users');
