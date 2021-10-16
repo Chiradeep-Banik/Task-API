@@ -19,13 +19,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connection = void 0;
 const dotenv = __importStar(require("dotenv"));
-const mongoose_1 = require("mongoose");
+const app_1 = require("./app");
 dotenv.config();
-const pw = process.env.DB_PASSWORD;
-const uri = `mongodb+srv://banik_1313:${pw}@cluster0.gdrur.mongodb.net/Task-Manager?retryWrites=true&w=majority`;
-exports.connection = (0, mongoose_1.connect)(uri);
-exports.connection.then(() => {
-    console.log(" Connected to MongoDB !! ");
-}).catch((err) => console.log(err));
+const PORT = process.env.PORT;
+require("./db/mongoose");
+app_1.app.listen(PORT, () => console.log(`Listening on port ${PORT} !!!!!`));
