@@ -118,7 +118,7 @@ export default {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  rootDir:"./build",
+  rootDir:"./build/tests",
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [
@@ -173,8 +173,7 @@ export default {
   // testURL: "http://localhost",
 
   // Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"
-  // timers: "real",
-
+  timers: "fake",
   // A map from regular expressions to paths to transformers
   // transform: undefined,
 

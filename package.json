@@ -4,9 +4,9 @@
   "description": "A simple task app",
   "main": "src/app.js",
   "scripts": {
-    "start": "node build/app.js",
+    "start": "node build/server.js",
     "build": "tsc -p .",
-    "dev": "nodemon -L src/app.ts",
+    "dev": "nodemon -L src/server.ts",
     "test": "tsc -p . && jest"
   },
   "repository": {

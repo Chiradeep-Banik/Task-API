@@ -8,15 +8,6 @@ import { IRequest, IUser } from '../custom';
 
 export const user_router = Router();
 
-// GET-----------------------------------------------------------------------------------------------------
-user_router.get('/users/me', auth, async (req: IRequest, res: Response): Promise<void> => {
-    try {
-        res.status(200).send(await get_public_fields(req.req_user as IUser));
-    } catch (err: unknown) {
-        res.status(400).send(err);
-    };
-});
-//GET-----------------------------------------------------------------------------------------------
 
 //POST ----------------------------------------------------------------------------------------------
 //SIGNUP
@@ -25,14 +16,11 @@ user_router.post('/users/signup', async (req: IRequest, res: Response): Promise<
         req.body.password = pass_to_hash(req.body.password);
         req.body._id = new mongoose.Types.ObjectId();
         req.body.tokens = [{ token: await generate_token(req.body._id) }];
-        console.log(req.body);
         var create_promise = await user.create(req.body);
-        console.log(req.body);
         res.header('Authorization', `Bearer ${req.body.tokens[0].token}`);
-        res.status(201).send(await get_public_fields(create_promise));
+        res.status(200).send(await get_public_fields(create_promise));
     } catch (err: unknown) {
-        console.log(`In Catch ----  ${err}`);
-        res.status(401).send(err);
+        res.status(400).send(err);
     };
 });
 //LOGIN
@@ -80,6 +68,16 @@ user_router.post('/users/me/logoutall', auth, async (req: IRequest, res: Respons
 });
 //POST ----------------------------------------------------------------------------------------------
 
+// GET-----------------------------------------------------------------------------------------------------
+user_router.get('/users/me', auth, async (req: IRequest, res: Response): Promise<void> => {
+    try {
+        res.status(200).send(await get_public_fields(req.req_user as IUser));
+    } catch (err: unknown) {
+        res.status(400).send(err);
+    };
+});
+//GET-----------------------------------------------------------------------------------------------
+
 //DELETE-----------------------------------------------------------------------------------------------
 
 user_router.delete('/users/me', auth, async (req: IRequest, res: Response): Promise<void> => {
@@ -109,7 +107,7 @@ user_router.put("/users/me", auth, async (req: IRequest, res: Response): Promise
         if (has_pass == true)
             req.body.password = pass_to_hash(req.body.password);
         var update_promise = await user.findOneAndUpdate({ _id: my_user._id }, req.body, { runValidators: true, new: true });
-        res.status(204).send(await get_public_fields(update_promise as IUser));
+        res.status(200).send(await get_public_fields(update_promise as IUser));
     } catch (e: unknown) {
         res.status(400).send(e);
     }
