@@ -39,7 +39,6 @@ user_router.post('/users/login', async (req: IRequest, res: Response): Promise<v
 //LOGOUT
 user_router.post('/users/me/logout', auth, async (req: IRequest, res: Response): Promise<void> => {
     try {
-        console.log(req.req_user);
         var my_user = req.req_user as IUser;
         for (let i = 0; i < (req.req_user as IUser).tokens.length; i++) {
             if (my_user.tokens[i].token == req.token) {
@@ -83,10 +82,7 @@ user_router.delete('/users/me', auth, async (req: IRequest, res: Response): Prom
         var my_user = req.req_user as IUser;
         var delete_promise = await user.deleteOne({ _id: my_user._id });
         var task_del_promise = await task.deleteMany({ creator_id: my_user._id });
-        if (delete_promise.deletedCount != 0)
-            res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
-        else
-            res.status(404).send("No users found");
+        res.status(200).send(`Deleted user`);   
     } catch (err: unknown) {
         res.status(400).send(err);
     }

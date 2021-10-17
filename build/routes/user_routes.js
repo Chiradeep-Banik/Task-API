@@ -53,7 +53,6 @@ exports.user_router.post('/users/login', (req, res) => __awaiter(void 0, void 0,
 //LOGOUT
 exports.user_router.post('/users/me/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.req_user);
         var my_user = req.req_user;
         for (let i = 0; i < req.req_user.tokens.length; i++) {
             if (my_user.tokens[i].token == req.token) {
@@ -98,10 +97,7 @@ exports.user_router.delete('/users/me', auth_1.auth, (req, res) => __awaiter(voi
         var my_user = req.req_user;
         var delete_promise = yield user_model_1.user.deleteOne({ _id: my_user._id });
         var task_del_promise = yield task_model_1.task.deleteMany({ creator_id: my_user._id });
-        if (delete_promise.deletedCount != 0)
-            res.status(200).send(`Deleted user ${delete_promise} and tasks ${task_del_promise}`);
-        else
-            res.status(404).send("No users found");
+        res.status(200).send(`Deleted user`);
     }
     catch (err) {
         res.status(400).send(err);
