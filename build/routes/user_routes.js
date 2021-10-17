@@ -47,7 +47,6 @@ exports.user_router.post('/users/login', (req, res) => __awaiter(void 0, void 0,
         res.status(200).send(yield (0, user_helper_1.get_public_fields)(my_user));
     }
     catch (err) {
-        console.log(err);
         res.status(400).send(err);
     }
 }));
@@ -62,7 +61,6 @@ exports.user_router.post('/users/me/logout', auth_1.auth, (req, res) => __awaite
                 break;
             }
         }
-        console.log(my_user);
         yield my_user.save();
         res.status(200).send(yield (0, user_helper_1.get_public_fields)(my_user));
     }

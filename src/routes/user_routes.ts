@@ -33,7 +33,6 @@ user_router.post('/users/login', async (req: IRequest, res: Response): Promise<v
         res.header('Authorization', `Bearer ${token}`);
         res.status(200).send(await get_public_fields(my_user));
     } catch (err: unknown) {
-        console.log(err);
         res.status(400).send(err);
     }
 });
@@ -48,7 +47,6 @@ user_router.post('/users/me/logout', auth, async (req: IRequest, res: Response):
                 break;
             }
         }
-        console.log(my_user);
         await my_user.save();
         res.status(200).send(await get_public_fields(my_user));
     } catch (err: unknown) {
