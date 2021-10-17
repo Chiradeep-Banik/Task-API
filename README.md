@@ -25,7 +25,7 @@ HTTP request --> is generally STATELESS -> meaning after sending a
 * Each entry is a document -- in a collection --- and each key:value pair is a field
 * total database is called a collections 
 
-## Testing 
+## TESTING 
 * Unit Testing -- Testing a single unit of code
 	- Writing a test file that tests all the units we want to test
 	- Can write as many test files we want for various units
