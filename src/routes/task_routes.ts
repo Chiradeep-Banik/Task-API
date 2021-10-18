@@ -12,7 +12,7 @@ task_router.post('/users/me/tasks', auth, async (req: IRequest, res: Response) =
         var my_user = req.req_user as IUser;
         req.body.creator_id = my_user._id;
         var create_promise = await task.create(req.body);
-        res.status(201).send(create_promise);
+        res.status(200).send(create_promise);
     } catch (err: unknown) {
         res.status(400).send(err);
     };

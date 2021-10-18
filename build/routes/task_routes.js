@@ -21,7 +21,7 @@ exports.task_router.post('/users/me/tasks', auth_1.auth, (req, res) => __awaiter
         var my_user = req.req_user;
         req.body.creator_id = my_user._id;
         var create_promise = yield task_model_1.task.create(req.body);
-        res.status(201).send(create_promise);
+        res.status(200).send(create_promise);
     }
     catch (err) {
         res.status(400).send(err);

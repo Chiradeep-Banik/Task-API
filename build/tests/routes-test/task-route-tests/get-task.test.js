@@ -48,31 +48,27 @@ afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield task_model_1.task.deleteMany({});
     yield mongoose_1.connection.close(true);
 }));
-describe('Test for POST at /users/me/tasks', () => {
+describe('Test for GET at /users/me/tasks', () => {
     describe('Auth token is not provided', () => {
         test('Should return 400', () => __awaiter(void 0, void 0, void 0, function* () {
-            var res = yield (0, supertest_1.default)(app_1.app).post('/users/me/tasks').send({
-                "name": "TASK3",
-                "description": "DESCRIPTION3",
-            });
+            var res = yield (0, supertest_1.default)(app_1.app).get('/users/me/tasks');
             expect(res.status).toBe(400);
         }));
     });
     describe('Auth token is provided', () => {
         test('Should return 400 -- for wrong token', () => __awaiter(void 0, void 0, void 0, function* () {
-            var res = yield (0, supertest_1.default)(app_1.app).post('/users/me/tasks').set('Authorization', 'Bearer wrong_token').send({
-                "name": "TASK3",
-                "description": "DESCRIPTION3",
-            });
+            var res = yield (0, supertest_1.default)(app_1.app).get('/users/me/tasks').set('Authorization', 'Bearer wrong_token');
             expect(res.status).toBe(400);
         }));
         describe('Everything is correct', () => {
             test('Should return 200', () => __awaiter(void 0, void 0, void 0, function* () {
-                var res = yield (0, supertest_1.default)(app_1.app).post('/users/me/tasks').set('Authorization', `Bearer ${token}`).send({
-                    "name": "TASK3",
-                    "description": "DESCRIPTION3",
-                });
+                var res = yield (0, supertest_1.default)(app_1.app).get('/users/me/tasks').set('Authorization', `Bearer ${token}`);
                 expect(res.status).toBe(200);
+            }));
+            test('Should return 404 if the user do not have any tasks', () => __awaiter(void 0, void 0, void 0, function* () {
+                yield task_model_1.task.deleteMany({});
+                var res = yield (0, supertest_1.default)(app_1.app).get('/users/me/tasks').set('Authorization', `Bearer ${token}`);
+                expect(res.status).toBe(404);
             }));
         });
     });
