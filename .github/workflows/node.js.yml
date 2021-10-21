@@ -21,6 +21,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Create .env file
+      run: |
+        touch .env
+        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+
+    - name: Delete gitignore
+      run: |
+        rm .gitignore
+        touch .gitignore
+        echo ./node_module>> .env
+    - name: Push .env to directory
+      run: |
+        git config user.email "chiradeep13@gmail.com"
+        git config user.name "Chiradeep-Banik"
+        git add .
+        git commit -m "environment variables"
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
